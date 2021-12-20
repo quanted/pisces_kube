@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pisces-django
+  name: pisces-django
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+       app: pisces-django
+  template:
+    metadata:
+      labels:
+        app: pisces-django
+    spec:
+      hostname: pisces-django
+      containers:
+      - name: pisces-django
+        image: dbsmith88/pisces-django:dev-k
+        command:
+          - sh
+          - /src/start-server.sh
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: pisces-config
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /src/collected_static
+          name: pisces-collected-static
+      restartPolicy: Always
+      volumes:
+      - name: pisces-collected-static
+        persistentVolumeClaim:
+          claimName: pisces-collected-static-pvc

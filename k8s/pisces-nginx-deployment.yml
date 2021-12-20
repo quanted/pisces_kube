@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pisces-nginx
+  name: pisces-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pisces-nginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: pisces-nginx
+    spec:
+      containers:
+      - image: dbsmith88/pisces-nginx:latest
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - mountPath: /src/collected_static
+          name: pisces-collected-static
+      restartPolicy: Always
+      volumes:
+      - name: pisces-collected-static
+        persistentVolumeClaim:
+          claimName: pisces-collected-static-pvc

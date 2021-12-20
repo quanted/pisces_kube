@@ -1,0 +1,3 @@
+[submodule "pisces_app"]
+	path = pisces_app
+	url = https://github.com/quanted/pisces_app.git

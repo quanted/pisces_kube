@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: pisces-postgres
+  name: pisces-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pisces-postgres
+  serviceName: pisces-postgres
+  template:
+    metadata:
+      labels:
+        app: pisces-postgres
+    spec:
+      containers:
+      - image: dbsmith88/pisces-postgres:latest
+        imagePullPolicy: Always
+        readinessProbe:
+          exec:
+            command:
+              - ls
+              - /
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+            - ls
+            - /
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        name: postgres
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        envFrom:
+          - configMapRef:
+              name: pisces-config
+        volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d/sql/
+          name: pisces-postgres-pvolume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      volumes:
+      - name: pisces-postgres-pvolume
+        persistentVolumeClaim:
+          claimName: pisces-postgres-pvc

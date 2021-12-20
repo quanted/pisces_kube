@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pisces-config
+  labels:
+    app: pisces-config
+data:
+  POSTGRES_DB: "postgres"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+  IN_DOCKER: "True"
+  DJANGO_SETTINGS_MODULE: "settings"
