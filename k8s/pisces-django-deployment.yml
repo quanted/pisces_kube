@@ -19,10 +19,10 @@ spec:
       hostname: pisces-django
       containers:
       - name: pisces-django
-        image: dbsmith88/pisces-django:dev-k
+        image: dbsmith88/pisces-django:latest
         command:
           - sh
-          - /src/start-server.sh
+          - /src/pisces_app/start-server.sh
         imagePullPolicy: Always
         envFrom:
           - configMapRef:
@@ -30,7 +30,7 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        - mountPath: /src/collected_static
+        - mountPath: /src/pisces_app/collected_static
           name: pisces-collected-static
       restartPolicy: Always
       volumes:

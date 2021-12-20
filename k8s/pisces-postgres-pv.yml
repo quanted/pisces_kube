@@ -4,9 +4,9 @@ metadata:
   name: pisces-postgres-pv
   labels:
     type: local
-    app: pisces-postgres
+    app: pisces-postgres-pv
 spec:
-  storageClassName: pisces-postgres
+  storageClassName: pisces-postgres-pv
   capacity:
     storage: 5Gi
   accessModes:

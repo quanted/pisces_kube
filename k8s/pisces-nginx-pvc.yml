@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: pisces-collected-static-pvc
   labels:
-    app: pisces-collected-static
+    app: pisces-collected-static-pvc
 spec:
   accessModes:
     - ReadWriteMany

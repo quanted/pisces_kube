@@ -4,12 +4,12 @@ metadata:
   name: pisces-collected-static-pv
   labels:
     type: local
-    app: pisces-collected-static
+    app: pisces-collected-static-pv
 spec:
   accessModes:
   - ReadWriteMany
   capacity:
     storage: 1Gi
-  storageClassName: pisces-collected-static
+  storageClassName: pisces-collected-static-pv
   hostPath:
     path: \D\\git\pisces_kube\collected_static
