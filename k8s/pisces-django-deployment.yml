@@ -19,7 +19,7 @@ spec:
       hostname: pisces-django
       containers:
       - name: pisces-django
-        image: dbsmith88/pisces-django:latest
+        image: ghcr.io/quanted/pisces_app:dev-k
         command:
           - sh
           - /src/pisces_app/start-server.sh

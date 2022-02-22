@@ -17,7 +17,7 @@ spec:
         app: pisces-nginx
     spec:
       containers:
-      - image: dbsmith88/pisces-nginx:latest
+      - image: ghcr.io/quanted/pisces-nginx:main
         imagePullPolicy: Always
         name: nginx
         ports:

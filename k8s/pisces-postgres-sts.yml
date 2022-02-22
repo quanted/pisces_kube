@@ -16,7 +16,7 @@ spec:
         app: pisces-postgres
     spec:
       containers:
-      - image: dbsmith88/pisces-postgres:latest
+      - image: ghcr.io/quanted/pisces-postgres:main
         imagePullPolicy: Always
         readinessProbe:
           exec:
