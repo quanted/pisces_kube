@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pisces-django
+  namespace: pisces-kube
 spec:
   type: ClusterIP
   selector:

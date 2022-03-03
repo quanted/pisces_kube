@@ -4,6 +4,11 @@ metadata:
   labels:
     app: pisces-postgres
   name: pisces-postgres
+  namespace: pisces-kube
+  annotations:
+    app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+    app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+    eks.amazonaws.com/compute-type: fargate
 spec:
   replicas: 1
   selector:
@@ -16,7 +21,7 @@ spec:
         app: pisces-postgres
     spec:
       containers:
-      - image: ghcr.io/quanted/pisces-postgres:main
+      - image: registry.epa.gov/qed/pisces_kube/pisces_postgres:dev-gl
         imagePullPolicy: Always
         readinessProbe:
           exec:
@@ -49,11 +54,11 @@ spec:
           - configMapRef:
               name: pisces-config
         volumeMounts:
-        - mountPath: /docker-entrypoint-initdb.d/
+        - mountPath: /docker-entrypoint-initdb.d/sql/
           name: pisces-postgres-pvolume
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
       - name: pisces-postgres-pvolume
         persistentVolumeClaim:
-          claimName: pisces-postgres-pvc
+          claimName: postgres-pvolume-claim1

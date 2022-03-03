@@ -1,0 +1,127 @@
+stages:
+  - Image Build
+  - Deployment
+  - Restart Pods
+  - Image Scan
+
+include:
+  - project: 'DSO/DASTScanner'
+    file: '.gitlab-ci.yml'
+  - remote: 'https://gitlab.com/prismacloud-public/shift-left/extension/-/raw/master/.pcs.gitlab-ci.yml'
+
+CopyDevImages:
+  stage: Image Build
+  tags:
+    - devsecops-instance
+  when: manual
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - mkdir -p /workspace
+    # PiSCES django image
+    - echo "FROM ghcr.io/quanted/pisces_app:dev-k" > /workspace/Dockerfile
+    - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_django:$CI_COMMIT_REF_NAME
+    # PiSCES nginx image
+    - echo "ghcr.io/quanted/pisces-nginx:main" > /workspace/Dockerfile
+    - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_nginx:$CI_COMMIT_REF_NAME
+    # PiSCES postgres image
+    - echo "FROM ghcr.io/quanted/pisces-postgres:main" > /workspace/Dockerfile
+    - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_postgres:$CI_COMMIT_REF_NAME
+  environment:
+    name: dev
+    url: http://qed.devsecops-dev.aws.epa.gov
+    kubernetes:
+      namespace: pisces-kube
+
+ApplyManifests:
+  stage: Deployment
+  tags:
+    - devsecops-instance
+  when: manual
+  image: dtzar/helm-kubectl
+  script:
+    - kubectl config set-cluster "$KUBECTL_DEV_CLUSTER" --server="$KUBE_URL"
+    - kubectl config set-cluster "$KUBECTL_DEV_CLUSTER" --certificate-authority=$KUBE_CA_PEM_FILE --embed-certs=true
+    - kubectl config set-credentials gitlab --token="$KUBE_TOKEN"
+    - kubectl config set-context default --cluster="$KUBECTL_DEV_CLUSTER" --user=gitlab --namespace="$KUBE_NAMESPACE"
+    - kubectl config use-context default
+    - kubectl apply -f k8s/
+  environment:
+    name: dev
+    url: http://qed.devsecops-dev.aws.epa.gov
+    kubernetes:
+      namespace: pisces-kube
+
+ScalePods:
+  stage: Restart Pods
+  tags:
+    - devsecops-instance
+  when: manual
+  image: dtzar/helm-kubectl
+  script:
+    - kubectl config set-cluster "$KUBECTL_DEV_CLUSTER" --server="$KUBE_URL"
+    - kubectl config set-cluster "$KUBECTL_DEV_CLUSTER" --certificate-authority=$KUBE_CA_PEM_FILE --embed-certs=true
+    - kubectl config set-credentials gitlab --token="$KUBE_TOKEN"
+    - kubectl config set-context default --cluster="$KUBECTL_DEV_CLUSTER" --user=gitlab --namespace="$KUBE_NAMESPACE"
+    - kubectl config use-context default
+    - kubectl scale deployment pisces-django --replicas=0
+    - kubectl scale deployment pisces-django --replicas=1
+  environment:
+    name: dev
+    url: http://qed.devsecops-dev.aws.epa.gov
+    kubernetes:
+      namespace: pisces-kube
+
+PrismaScanDjango:
+  stage: Image Scan
+  extends:
+    - .pcs_compute_scan
+  tags:
+    - twistcli
+  when: manual
+  allow_failure: false
+  variables:
+      pisces_django_image: "registry.epa.gov/qed/pisces_kube/pisces_django:dev-gl"
+      prisma_cloud_compute_url: "https://prismacloud.gitlab-prod.aws.epa.gov"
+      GIT_STRATEGY: clone
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.epa.gov
+    - docker pull $pisces_django_image
+    - ./image_scan.sh
+
+PrismaScanNginx:
+  stage: Image Scan
+  extends:
+    - .pcs_compute_scan
+  tags:
+    - twistcli
+  when: manual
+  allow_failure: false
+  variables:
+      pisces_nginx_image: "registry.epa.gov/qed/pisces_kube/pisces_nginx:dev-gl"
+      prisma_cloud_compute_url: "https://prismacloud.gitlab-prod.aws.epa.gov"
+      GIT_STRATEGY: clone
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.epa.gov
+    - docker pull $pisces_nginx_image
+    - ./image_scan.sh
+
+PrismaScanPostgres:
+  stage: Image Scan
+  extends:
+    - .pcs_compute_scan
+  tags:
+    - twistcli
+  when: manual
+  allow_failure: false
+  variables:
+      pisces_postgres_image: "registry.epa.gov/qed/pisces_kube/pisces_postgres:dev-gl"
+      prisma_cloud_compute_url: "https://prismacloud.gitlab-prod.aws.epa.gov"
+      GIT_STRATEGY: clone
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.epa.gov
+    - docker pull $pisces_postgres_image
+    - ./image_scan.sh

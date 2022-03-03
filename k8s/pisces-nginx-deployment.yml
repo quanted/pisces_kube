@@ -4,6 +4,11 @@ metadata:
   labels:
     app: pisces-nginx
   name: pisces-nginx
+  namespace: pisces-kube
+    annotations:
+      app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+      app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+      eks.amazonaws.com/compute-type: fargate
 spec:
   replicas: 1
   selector:
@@ -17,17 +22,34 @@ spec:
         app: pisces-nginx
     spec:
       containers:
-      - image: ghcr.io/quanted/pisces-nginx:main
+      - image: registry.epa.gov/qed/pisces_kube/pisces_postgres:dev-gl
         imagePullPolicy: Always
         name: nginx
         ports:
         - containerPort: 80
         - containerPort: 443
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
         volumeMounts:
         - mountPath: /src/collected_static
           name: pisces-collected-static
       restartPolicy: Always
       volumes:
-      - name: pisces-collected-static
+      - name: collected-static
         persistentVolumeClaim:
-          claimName: pisces-collected-static-pvc
+          claimName: collected-static-pvolume-claim1

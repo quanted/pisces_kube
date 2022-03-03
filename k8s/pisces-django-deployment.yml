@@ -4,6 +4,11 @@ metadata:
   labels:
     app: pisces-django
   name: pisces-django
+  namespace: pisces-kube
+    annotations:
+      app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+      app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+      eks.amazonaws.com/compute-type: fargate
 spec:
   replicas: 1
   strategy:
@@ -19,7 +24,7 @@ spec:
       hostname: pisces-django
       containers:
       - name: pisces-django
-        image: ghcr.io/quanted/pisces_app:dev-k
+        image: registry.epa.gov/qed/pisces_kube/pisces_django:dev-gl
         command:
           - sh
           - /src/pisces_app/start-server.sh
@@ -29,11 +34,28 @@ spec:
               name: pisces-config
         ports:
         - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
         volumeMounts:
         - mountPath: /src/pisces_app/collected_static
-          name: pisces-collected-static
+          name: collected-static
       restartPolicy: Always
       volumes:
-      - name: pisces-collected-static
+      - name: collected-static
         persistentVolumeClaim:
-          claimName: pisces-collected-static-pvc
+          claimName: collected-static-pvolume-claim1
