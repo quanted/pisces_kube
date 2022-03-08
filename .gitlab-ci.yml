@@ -84,12 +84,12 @@ PrismaScanDjango:
   when: manual
   allow_failure: false
   variables:
-      pisces_django_image: "registry.epa.gov/qed/pisces_kube/pisces_django:dev-gl"
+      prisma_cloud_scan_image: "registry.epa.gov/qed/pisces_kube/pisces_django:dev-gl"
       prisma_cloud_compute_url: "https://prismacloud.gitlab-prod.aws.epa.gov"
       GIT_STRATEGY: clone
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.epa.gov
-    - docker pull $pisces_django_image
+    - docker pull $prisma_cloud_scan_image
     - ./image_scan.sh
 
 PrismaScanNginx:
@@ -101,12 +101,12 @@ PrismaScanNginx:
   when: manual
   allow_failure: false
   variables:
-      pisces_nginx_image: "registry.epa.gov/qed/pisces_kube/pisces_nginx:dev-gl"
+      prisma_cloud_scan_image: "registry.epa.gov/qed/pisces_kube/pisces_nginx:dev-gl"
       prisma_cloud_compute_url: "https://prismacloud.gitlab-prod.aws.epa.gov"
       GIT_STRATEGY: clone
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.epa.gov
-    - docker pull $pisces_nginx_image
+    - docker pull $prisma_cloud_scan_image
     - ./image_scan.sh
 
 PrismaScanPostgres:
@@ -118,10 +118,10 @@ PrismaScanPostgres:
   when: manual
   allow_failure: false
   variables:
-      pisces_postgres_image: "registry.epa.gov/qed/pisces_kube/pisces_postgres:dev-gl"
+      prisma_cloud_scan_image: "registry.epa.gov/qed/pisces_kube/pisces_postgres:dev-gl"
       prisma_cloud_compute_url: "https://prismacloud.gitlab-prod.aws.epa.gov"
       GIT_STRATEGY: clone
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.epa.gov
-    - docker pull $pisces_postgres_image
+    - docker pull $prisma_cloud_scan_image
     - ./image_scan.sh
