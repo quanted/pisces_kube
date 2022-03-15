@@ -4,11 +4,11 @@ metadata:
   labels:
     app: pisces-django
   name: pisces-django
-  namespace: pisces-kube
-    annotations:
-      app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
-      app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
-      eks.amazonaws.com/compute-type: fargate
+#  namespace: pisces-kube
+#    annotations:
+#      app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+#      app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+#      eks.amazonaws.com/compute-type: fargate
 spec:
   replicas: 1
   strategy:
@@ -24,11 +24,13 @@ spec:
       hostname: pisces-django
       containers:
       - name: pisces-django
-        image: registry.epa.gov/qed/pisces_kube/pisces_django:dev-gl
-        command:
-          - sh
-          - /src/pisces_app/start-server.sh
-        imagePullPolicy: Always
+#        image: registry.epa.gov/qed/pisces_kube/pisces_django:dev-gl
+#        imagePullPolicy: Always
+         image: pisces-django-test-01
+         imagePullPolicy: Never
+#        command:
+#          - sh
+#          - /src/pisces_app/start-server.sh
         envFrom:
           - configMapRef:
               name: pisces-config
@@ -56,6 +58,6 @@ spec:
           name: collected-static
       restartPolicy: Always
       volumes:
-      - name: collected-static
-        persistentVolumeClaim:
-          claimName: collected-static-pvolume-claim1
+#      - name: collected-static
+#        persistentVolumeClaim:
+#          claimName: collected-static-pvolume-claim1
