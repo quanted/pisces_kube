@@ -10,3 +10,4 @@ data:
   POSTGRES_PASSWORD: "postgres"
   IN_DOCKER: "True"
   DJANGO_SETTINGS_MODULE: "pisces_app.app.settings"
+  DEBUG: "False"
