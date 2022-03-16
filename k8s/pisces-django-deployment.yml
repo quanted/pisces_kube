@@ -19,11 +19,13 @@ spec:
       hostname: pisces-django
       containers:
       - name: pisces-django
+#        image: pisces-django-test-01
+#        imagePullPolicy: Never
         image: ghcr.io/quanted/pisces_app:dev-k
-        command:
-          - sh
-          - /src/pisces_app/start-server.sh
         imagePullPolicy: Always
+#        command:
+#          - sh
+#          - /src/pisces_app/start-server.sh
         envFrom:
           - configMapRef:
               name: pisces-config
@@ -31,9 +33,9 @@ spec:
         - containerPort: 8080
         volumeMounts:
         - mountPath: /src/pisces_app/collected_static
-          name: pisces-collected-static
+          name: collected-static
       restartPolicy: Always
       volumes:
-      - name: pisces-collected-static
+      - name: collected-static
         persistentVolumeClaim:
           claimName: pisces-collected-static-pvc

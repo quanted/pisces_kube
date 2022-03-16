@@ -16,6 +16,8 @@ spec:
         app: pisces-postgres
     spec:
       containers:
+#      - image: pisces-postgres-test-01
+#        imagePullPolicy: Never
       - image: ghcr.io/quanted/pisces-postgres:main
         imagePullPolicy: Always
         readinessProbe:
@@ -49,7 +51,7 @@ spec:
           - configMapRef:
               name: pisces-config
         volumeMounts:
-        - mountPath: /docker-entrypoint-initdb.d/
+        - mountPath: /docker-entrypoint-initdb.d/sql/
           name: pisces-postgres-pvolume
       dnsPolicy: ClusterFirst
       restartPolicy: Always
