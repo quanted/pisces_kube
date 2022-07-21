@@ -1,16 +1,16 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pisces-collected-static-pvc
-  labels:
-    app: pisces-collected-static-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  selector:
-    matchLabels:
-      release: "stable"
-      name: pisces-collected-static-pv
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: pisces-collected-static-pvc
+#   labels:
+#     app: pisces-collected-static-pvc
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   selector:
+#     matchLabels:
+#       release: "stable"
+#       name: pisces-collected-static-pv

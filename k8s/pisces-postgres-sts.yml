@@ -4,6 +4,7 @@ metadata:
   labels:
     app: pisces-postgres
   name: pisces-postgres
+  namespace: qed-kube-dev
 spec:
   replicas: 1
   selector:
@@ -16,8 +17,6 @@ spec:
         app: pisces-postgres
     spec:
       containers:
-#      - image: pisces-postgres-test-01
-#        imagePullPolicy: Never
       - image: ghcr.io/quanted/pisces-postgres:main
         imagePullPolicy: Always
         readinessProbe:
@@ -58,4 +57,4 @@ spec:
       volumes:
       - name: pisces-postgres-pvolume
         persistentVolumeClaim:
-          claimName: pisces-postgres-pvc
+          claimName: pisces-postgres-pv-claim

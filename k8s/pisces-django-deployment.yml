@@ -4,6 +4,7 @@ metadata:
   labels:
     app: pisces-django
   name: pisces-django
+  namespace: qed-kube-dev
 spec:
   replicas: 1
   strategy:
@@ -19,13 +20,8 @@ spec:
       hostname: pisces-django
       containers:
       - name: pisces-django
-#        image: pisces-django-test-01
-#        imagePullPolicy: Never
         image: ghcr.io/quanted/pisces_app:dev-k
         imagePullPolicy: Always
-#        command:
-#          - sh
-#          - /src/pisces_app/start-server.sh
         envFrom:
           - configMapRef:
               name: pisces-config
@@ -34,8 +30,13 @@ spec:
         volumeMounts:
         - mountPath: /src/pisces_app/collected_static
           name: collected-static
+        - mountPath: /src/app-data/
+          name: pisces-app-data
       restartPolicy: Always
       volumes:
       - name: collected-static
         persistentVolumeClaim:
-          claimName: pisces-collected-static-pvc
+          claimName: collected-static-pvolume-claim1
+      - name: pisces-app-data
+        persistentVolumeClaim:
+          claimName: app-data-pvolume-claim1

@@ -4,6 +4,7 @@ metadata:
   labels:
     app: pisces-nginx
   name: pisces-nginx
+  namespace: qed-kube-dev
 spec:
   replicas: 1
   selector:
@@ -19,12 +20,9 @@ spec:
       containers:
       - image: ghcr.io/quanted/pisces-nginx:main
         imagePullPolicy: Always
-#      - image: pisces-nginx-test-01
-#        imagePullPolicy: Never
         name: nginx
         ports:
         - containerPort: 80
-        - containerPort: 443
         volumeMounts:
         - mountPath: /src/collected_static
           name: collected-static
@@ -32,4 +30,4 @@ spec:
       volumes:
       - name: collected-static
         persistentVolumeClaim:
-          claimName: pisces-collected-static-pvc
+          claimName: collected-static-pvolume-claim1

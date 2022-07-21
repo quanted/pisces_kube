@@ -1,16 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pisces-postgres-pvc
+  name: pisces-postgres-pv-claim
+  namespace: qed-kube-dev
   labels:
-    app: pisces-postgres-pvc
+    app: pisces-postgres
 spec:
   accessModes:
     - ReadWriteMany
+  storageClassName: efs-sc
   resources:
     requests:
       storage: 5Gi
-  selector:
-    matchLabels:
-      release: "stable"
-      name: pisces-postgres-pv
