@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pisces-nginx
-  namespace: pisces-kube
+  namespace: qed-45-stg
 spec:
   type: ClusterIP
   selector:

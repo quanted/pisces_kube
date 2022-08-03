@@ -4,7 +4,7 @@ metadata:
   labels:
     app: pisces-postgres
   name: pisces-postgres
-  namespace: pisces-kube
+  namespace: qed-45-stg
   annotations:
     app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
     app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
@@ -61,4 +61,4 @@ spec:
       volumes:
       - name: pisces-postgres-pvolume
         persistentVolumeClaim:
-          claimName: postgres-pvolume-claim1
+          claimName: pisces-postgres-pvc

@@ -12,7 +12,7 @@ include:
 CopyDevImages:
   stage: Image Build
   tags:
-    - devsecops-instance
+    - qed-stg-runner
   when: manual
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -31,15 +31,15 @@ CopyDevImages:
     - echo "FROM ghcr.io/quanted/pisces-postgres:main" > /workspace/Dockerfile
     - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_postgres:$CI_COMMIT_REF_NAME
   environment:
-    name: dev
-    url: http://qed.devsecops-dev.aws.epa.gov
+    name: stg
+    url: http://qed.qed-stage.aws.epa.gov
     kubernetes:
-      namespace: pisces-kube
+      namespace: qed-45-stg
 
 ApplyManifests:
   stage: Deployment
   tags:
-    - devsecops-instance
+    - qed-stg-runner
   when: manual
   image: dtzar/helm-kubectl
   script:
@@ -50,15 +50,15 @@ ApplyManifests:
     - kubectl config use-context default
     - kubectl apply -f k8s/
   environment:
-    name: dev
-    url: http://qed.devsecops-dev.aws.epa.gov
+    name: stg
+    url: http://qed.qed-stage.aws.epa.gov
     kubernetes:
-      namespace: pisces-kube
+      namespace: qed-45-stg
 
 LoadVolumeData:
   stage: Deployment
   tags:
-    - devsecops-instance
+    - qed-stg-runner
   when: manual
   image: dtzar/helm-kubectl
   script:
@@ -67,17 +67,37 @@ LoadVolumeData:
     - kubectl config set-credentials gitlab --token="$KUBE_TOKEN"
     - kubectl config set-context default --cluster="$KUBECTL_DEV_CLUSTER" --user=gitlab --namespace="$KUBE_NAMESPACE"
     - kubectl config use-context default
+    - chmod 775 ./pisces-volume-setup.sh
     - ./pisces-volume-setup.sh
   environment:
-    name: dev
-    url: http://qed.devsecops-dev.aws.epa.gov
+    name: stg
+    url: http://qed.qed-stage.aws.epa.gov
     kubernetes:
-      namespace: qed-kube-scripts-79-dev
+      namespace: qed-45-stg
+
+DeleteManifests:
+  stage: Deployment
+  tags:
+    - qed-stg-runner
+  when: manual
+  image: dtzar/helm-kubectl
+  script:
+    - kubectl config set-cluster "$KUBECTL_DEV_CLUSTER" --server="$KUBE_URL"
+    - kubectl config set-cluster "$KUBECTL_DEV_CLUSTER" --certificate-authority=$KUBE_CA_PEM_FILE --embed-certs=true
+    - kubectl config set-credentials gitlab --token="$KUBE_TOKEN"
+    - kubectl config set-context default --cluster="$KUBECTL_DEV_CLUSTER" --user=gitlab --namespace="$KUBE_NAMESPACE"
+    - kubectl config use-context default
+    - kubectl delete -f k8s/
+  environment:
+    name: stg
+    url: http://qed.qed-stage.aws.epa.gov
+    kubernetes:
+      namespace: qed-45-stg
 
 ScalePods:
   stage: Restart Pods
   tags:
-    - devsecops-instance
+    - qed-stg-runner
   when: manual
   image: dtzar/helm-kubectl
   script:
@@ -88,16 +108,20 @@ ScalePods:
     - kubectl config use-context default
     - kubectl scale deployment pisces-django --replicas=0
     - kubectl scale deployment pisces-django --replicas=1
+    - kubectl scale deployment pisces-nginx --replicas=0
+    - kubectl scale deployment pisces-nginx --replicas=1
+    - kubectl scale sts pisces-postgres --replicas=0
+    - kubectl scale sts pisces-postgres --replicas=1
   environment:
-    name: dev
-    url: http://qed.devsecops-dev.aws.epa.gov
+    name: stg
+    url: http://qed.qed-stage.aws.epa.gov
     kubernetes:
-      namespace: pisces-kube
+      namespace: qed-45-stg
 
 RestartPostGIS:
   stage: Restart Pods
   tags:
-    - devsecops-instance
+    - qed-stg-runner
   when: manual
   image: dtzar/helm-kubectl
   script:
@@ -109,10 +133,10 @@ RestartPostGIS:
     - kubectl scale sts pisces-postgres --replicas=0
     - kubectl scale sts pisces-postgres --replicas=1
   environment:
-    name: dev
-    url: http://qed.devsecops-dev.aws.epa.gov
+    name: stg
+    url: http://qed.qed-stage.aws.epa.gov
     kubernetes:
-      namespace: pisces-kube
+      namespace: qed-45-stg
 
 
 PrismaScanDjango:

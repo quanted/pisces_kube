@@ -4,7 +4,7 @@ metadata:
   labels:
     app: pisces-django
   name: pisces-django
-  namespace: pisces-kube
+  namespace: qed-45-stg
     annotations:
       app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
       app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
@@ -52,6 +52,9 @@ spec:
         - mountPath: /src/pisces_app/collected_static
           name: collected-static
       restartPolicy: Always
+      imagePullSecrets:
+        - name: glcr-auth
+      schedulerName: default-scheduler
       volumes:
       - name: collected-static
         persistentVolumeClaim:
