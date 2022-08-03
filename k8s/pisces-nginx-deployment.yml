@@ -46,7 +46,7 @@ spec:
             cpu: "500m"
         volumeMounts:
         - mountPath: /src/collected_static
-          name: pisces-collected-static
+          name: collected-static
       restartPolicy: Always
       volumes:
       - name: collected-static
