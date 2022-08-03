@@ -25,10 +25,10 @@ CopyDevImages:
     - echo "FROM ghcr.io/quanted/pisces_app:dev-k" > /workspace/Dockerfile
     - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_django:$CI_COMMIT_REF_NAME
     # PiSCES nginx image
-    - echo "FROM ghcr.io/quanted/pisces-nginx:main" > /workspace/Dockerfile
+    - echo "FROM ghcr.io/quanted/pisces-nginx:dev-gl" > /workspace/Dockerfile
     - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_nginx:$CI_COMMIT_REF_NAME
     # PiSCES postgres image
-    - echo "FROM ghcr.io/quanted/pisces-postgres:main" > /workspace/Dockerfile
+    - echo "FROM ghcr.io/quanted/pisces-postgres:dev-gl" > /workspace/Dockerfile
     - /kaniko/executor --context=/workspace --destination=$CI_REGISTRY_IMAGE/pisces_postgres:$CI_COMMIT_REF_NAME
   environment:
     name: stg
