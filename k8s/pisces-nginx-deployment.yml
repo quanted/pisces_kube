@@ -32,18 +32,18 @@ spec:
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: 80
-            initialDelaySeconds: 15
-            periodSeconds: 30
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "500Mi"
-              cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
         volumeMounts:
         - mountPath: /src/collected_static
           name: pisces-collected-static
