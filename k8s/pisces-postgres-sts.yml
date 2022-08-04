@@ -56,6 +56,8 @@ spec:
         volumeMounts:
         - mountPath: /docker-entrypoint-initdb.d/sql/
           name: pisces-postgres-pvolume
+      imagePullSecrets:
+        - name: glcr-auth
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
