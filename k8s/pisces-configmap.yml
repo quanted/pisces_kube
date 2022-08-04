@@ -12,4 +12,4 @@ data:
   IN_DOCKER: "True"
   DJANGO_SETTINGS_MODULE: "pisces_app.app.settings"
   DEBUG: "False"
-  PGDATA: "/var/lib/postgresql/data"
+  PGDATA: "/var/lib/postgresql/data/sql"
