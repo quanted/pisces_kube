@@ -54,7 +54,7 @@ spec:
           - configMapRef:
               name: pisces-config
         volumeMounts:
-        - mountPath: /docker-entrypoint-initdb.d/
+        - mountPath: /var/lib/postgresql/data/pgdata
           name: pisces-postgres-pvolume
       imagePullSecrets:
         - name: glcr-auth
