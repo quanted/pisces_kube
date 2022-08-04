@@ -7,5 +7,5 @@ kubectl exec deploy/oms-shell -- /bin/bash -c "cp -rf /tmp/pisces/*  /mnt/app-da
 kubectl exec deploy/oms-shell -- /bin/bash -c "aws s3 cp s3://qed-stg/database/pisces /tmp/database/pisces --recursive"
 kubectl exec deploy/oms-shell -- /bin/bash -c "cd /mnt/postgres-pvolume; rm -r *"
 kubectl exec deploy/oms-shell -- /bin/bash -c "cp -rf /tmp/database/pisces/*  /mnt/postgres-pvolume/"
-kubectl exec deploy/oms-shell -- /bin/bash -c "chmod -R 755 /mnt/postgres-pvolume/*" 
+kubectl exec deploy/oms-shell -- /bin/bash -c "chmod -R 777 /mnt/postgres-pvolume/*" 
 echo "Completed updates from s3 bucket"
