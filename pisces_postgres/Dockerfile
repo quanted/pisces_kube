@@ -1,4 +1,4 @@
-FROM postgis/postgis:9.6-2.5-alpine
+FROM postgis/postgis:9.6-3.2-alpine
 
 RUN apk update
 RUN apk upgrade
