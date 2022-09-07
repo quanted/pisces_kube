@@ -5,10 +5,10 @@ metadata:
     app: pisces-nginx
   name: pisces-nginx
   namespace: qed-45-stg
-    annotations:
-      app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
-      app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
-      eks.amazonaws.com/compute-type: fargate
+  annotations:
+    app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+    app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+    eks.amazonaws.com/compute-type: fargate
 spec:
   replicas: 1
   selector:
@@ -32,21 +32,23 @@ spec:
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: 80
-            initialDelaySeconds: 15
-            periodSeconds: 30
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "500Mi"
-              cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
         volumeMounts:
         - mountPath: /src/collected_static
-          name: pisces-collected-static
+          name: collected-static
+      imagePullSecrets:
+      - name: glcr-auth
       restartPolicy: Always
       volumes:
       - name: collected-static
