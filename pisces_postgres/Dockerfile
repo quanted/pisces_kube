@@ -1,9 +1,10 @@
-FROM postgis/postgis:9.6-3.2-alpine
+FROM postgis/postgis:11-2.5-alpine
+
+ARG APP_USER=postgres
 
 RUN apk update
 RUN apk upgrade
 
-ARG APP_USER=postgres
 RUN mkdir /docker-entrypoint-initdb.d/sql
 
 RUN chown -R $APP_USER:$APP_USER /docker-entrypoint-initdb.d/
