@@ -1,4 +1,4 @@
-FROM postgis/postgis:11-2.5-alpine
+FROM postgis/postgis:11-3.3-alpine
 
 ARG APP_USER=postgres
 
