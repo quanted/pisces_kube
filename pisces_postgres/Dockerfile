@@ -3,7 +3,7 @@ FROM postgis/postgis:11-2.5-alpine
 ARG APP_USER=postgres
 
 RUN apk update
-RUN apk upgrade
+RUN apk upgrade --available && sync
 
 RUN mkdir /docker-entrypoint-initdb.d/sql
 

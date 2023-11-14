@@ -4,6 +4,8 @@ ARG APP_USER=nginx
 
 RUN apk update
 RUN apk upgrade
+RUN apk upgrade openssl
+
 
 RUN rm /etc/nginx/conf.d/default.conf
 
